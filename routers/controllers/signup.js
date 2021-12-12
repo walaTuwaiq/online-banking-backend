@@ -14,7 +14,7 @@ const newUser = async (req, res) => {
       const saving = await newUserAccount.save();
       res.status(201).json(newUserAccount);
     } else {
-      res.status(201).send("You are already have account.");
+      res.send("You are already have account.");
     }
   } catch (error) {
     res.send(error);

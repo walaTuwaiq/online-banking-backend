@@ -15,10 +15,10 @@ const login = async (req, res) => {
         const token = jwt.sign(payload, "ABC");
         res.status(201).json({ token,payload });
       } else {
-        res.status(403).send("wrong password!");
+        res.send("wrong password!");
       }
     } else {
-      res.status(403).send("You're don't have an account.");
+      res.send("You're don't have an account.");
     }
 
     // password = await bcrypt.hash(password, 10);
