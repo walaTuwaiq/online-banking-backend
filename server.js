@@ -21,6 +21,9 @@ app.use(userRoute)
 const cardRoute = require("./routers/routes/cardRoute")
 app.use(cardRoute)
 
+const paymentRoute = require("./routers/routes/paymentRoute")
+app.use(paymentRoute)
+
 
 ////////////
 

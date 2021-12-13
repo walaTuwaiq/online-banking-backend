@@ -7,8 +7,8 @@ const userModel = new mongoose.Schema({
   lastSeen: { type: String },
   dateOfBirth: { type: String, required: true },
   nationalId: { type: Number, required: true, unique: true },
-  history: [{ type: String }],
   isAdmin: { type: Boolean, required: true },
+  history: [{ type: mongoose.Schema.Types.ObjectId, ref: "paymentModel" }],
 });
 
 module.exports = mongoose.model("userModel", userModel);

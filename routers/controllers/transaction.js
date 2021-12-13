@@ -1,15 +1,16 @@
 const paymentModel = require("../../db/models/paymentModel");
 const userModel = require("../../db/models/userModel");
 const cardModel = require("../../db/models/cardModel");
+const transactionModel = require("../../db/models/transactionModel")
 
-const userPayments = async (req, res) => {
+const userTransaction = async (req, res) => {
   const userId = req.token.userId
   const cardUser = await cardModel.findOne({userId})
-  const receiptsUser = await paymentModel.find({cardId: cardUser._id})
+  const receiptsUser = await transactionModel.find({cardId: cardUser._id})
   res.status(200).json(receiptsUser)
 };
 
-const paymentReceipt = async (req, res) => {
+const transactionReceipt = async (req, res) => {
   const { date, to, amount } = req.body;
   const userId = req.token.userId;
 
@@ -45,7 +46,5 @@ const paymentReceipt = async (req, res) => {
     res.send("error here");
   }
 };
-
-
 
 module.exports = { paymentReceipt, userPayments };

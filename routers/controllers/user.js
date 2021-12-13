@@ -1,5 +1,5 @@
 const userModel = require("../../db/models/userModel");
-const walletModel = require("../../db/models/walletModel")
+const cardModel = require("../../db/models/cardModel")
 
 const getUsers = (req, res) => {
   userModel
@@ -15,8 +15,8 @@ const getUsers = (req, res) => {
 const userData = async(req,res)=>{
   const userId = req.token.userId
   try {
-    const userDate = await userModel.find({_id:userId}).select("userName fullName lastSeen dateOfBirth nationalId history isAdmin")
-    res.status(200).json(userDate[0])
+    const userDate = await userModel.findOne({_id:userId}).select("userName fullName lastSeen dateOfBirth nationalId history isAdmin")
+    res.status(200).json(userDate)
   } catch (error) {
     res.send(error)
   }
@@ -25,14 +25,10 @@ const userData = async(req,res)=>{
 const addBalance = async(req,res)=>{
   const {newBalance} = req.body
   const userId = req.token.userId
-  // console.log(newBalance);
-
   try {
-    const user = await walletModel.findOne({userId})
+    const user = await cardModel.findOne({userId})
     const sumBlanace = user.balance+newBalance
-    const updateWallet = await walletModel.findOneAndUpdate({userId},{balance:sumBlanace},{new:true})
-    // console.log(sumBlanace);
-    // console.log(updateWallet);
+    const updateWallet = await cardModel.findOneAndUpdate({userId},{balance:sumBlanace},{new:true})
     res.status(201).json(user)
   } catch (error) {
     res.send(error)
