@@ -8,10 +8,7 @@ const userModel = new mongoose.Schema({
   dateOfBirth: { type: String, required: true },
   nationalId: { type: Number, required: true, unique: true },
   history: [{ type: String }],
-  // transfer:[{type: String, required: true}],
   isAdmin: { type: Boolean, required: true },
-  walletId: { type: mongoose.Schema.Types.ObjectId, ref: "walletModel" },
-  cardId: { type: mongoose.Schema.Types.ObjectId, ref: "cardModel" },
 });
 
 module.exports = mongoose.model("userModel", userModel);

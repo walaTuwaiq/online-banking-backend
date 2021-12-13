@@ -1,7 +1,10 @@
 // require("../../db/db");
 const userModel = require("../../db/models/userModel");
+const walletModel = require("../../db/models/walletModel")
+const cardModel = require("../../db/models/cardModel")
 // const courseModel = require("../../db/models/courseModel")
 const bcrypt = require("bcrypt");
+const { findOneAndUpdate } = require("../../db/models/userModel");
 
 const newUser = async (req, res) => {
   let { userName, fullName, password, dateOfBirth, nationalId } = req.body;
@@ -11,7 +14,20 @@ const newUser = async (req, res) => {
     if (checkUser.length == 0) {
       password = await bcrypt.hash(password, 10);
       const newUserAccount = await new userModel({ userName, fullName, password, dateOfBirth, nationalId, history:[], isAdmin:false });
-      const saving = await newUserAccount.save();
+      const saveNewAccount = await newUserAccount.save();
+      
+      const newWalletToUser = await new walletModel({balance:0.00,transfer:[],userId:saveNewAccount._id})
+      const saveNewWallet = await newWalletToUser.save();
+
+      const findLastUser = await cardModel.findOne().sort({ _id: -1 }).limit(1)
+      if(findLastUser == null){
+        const newCardToUser = await new cardModel({ibanNumber:1000806030302001, isActive: true, userId: saveNewAccount._id})
+        const saveNewCard = await newCardToUser.save();
+      }else{
+        const newIban = findLastUser.ibanNumber+1
+        const newCardToUser = await new cardModel({ibanNumber:newIban, isActive: true, userId: saveNewAccount._id})
+        const saveNewCard = await newCardToUser.save();
+      }
       res.status(201).json(newUserAccount);
     } else {
       res.send("You are already have account.");

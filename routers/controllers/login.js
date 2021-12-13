@@ -1,4 +1,3 @@
-// require("../../db/db");
 const userModel = require("../../db/models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -20,11 +19,6 @@ const login = async (req, res) => {
     } else {
       res.send("You're don't have an account.");
     }
-
-    // password = await bcrypt.hash(password, 10);
-    // const newUserAccount = new signUpModel({ name, email, password });
-    // const saving = await newUserAccount.save();
-    // res.status(201).json(newUserAccount);
   } catch (error) {
     res.send("error");
   }

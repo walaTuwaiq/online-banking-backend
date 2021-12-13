@@ -18,6 +18,9 @@ app.use(loginRoute)
 const userRoute = require("./routers/routes/userRoute")
 app.use(userRoute)
 
+const cardRoute = require("./routers/routes/cardRoute")
+app.use(cardRoute)
+
 
 ////////////
 

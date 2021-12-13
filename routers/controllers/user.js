@@ -1,4 +1,5 @@
 const userModel = require("../../db/models/userModel");
+const walletModel = require("../../db/models/walletModel")
 
 const getUsers = (req, res) => {
   userModel
@@ -11,43 +12,31 @@ const getUsers = (req, res) => {
     });
 };
 
-// const newCourse = async (req, res) => {
-//   const { name, chapters, subject } = req.body;
-//   const userId = req.token.userId;
-//   const newCourse = new courseModel({ name, chapters, subject, userId });
-//   try {
-//     const saveCourse = await newCourse.save();
-//     const courses = await courseModel.find({}).populate('userId');
-//     res.status(201).json(courses);
-//   } catch (error) {
-//     res.send(error);
-//   }
-// };
+const userData = async(req,res)=>{
+  const userId = req.token.userId
+  try {
+    const userDate = await userModel.find({_id:userId}).select("userName fullName lastSeen dateOfBirth nationalId history isAdmin")
+    res.status(200).json(userDate[0])
+  } catch (error) {
+    res.send(error)
+  }
+}
 
-// const deleteCourse = async (req, res) => {
-//   const id = req.params.id;
-//   try {
-//     const deleteOne = await courseModel.findOneAndDelete({ _id: id });
-//     const courses = await courseModel.find({}).populate('userId');
-//     res.status(201).json(courses);
-//   } catch (error) {
-//     res.send(error);
-//   }
-// };
+const addBalance = async(req,res)=>{
+  const {newBalance} = req.body
+  const userId = req.token.userId
+  // console.log(newBalance);
 
-// const updateCourse = async (req, res) => {
-//   const id = req.params.id;
-//   try {
-//     const updateOne = await courseModel.findOneAndUpdate(
-//       { _id: id },
-//       req.body,
-//       { new: true }
-//     );
-//     const courses = await courseModel.find({}).populate('userId');
-//     res.status(201).json(courses);
-//   } catch (error) {
-//     res.send(error);
-//   }
-// };
+  try {
+    const user = await walletModel.findOne({userId})
+    const sumBlanace = user.balance+newBalance
+    const updateWallet = await walletModel.findOneAndUpdate({userId},{balance:sumBlanace},{new:true})
+    // console.log(sumBlanace);
+    // console.log(updateWallet);
+    res.status(201).json(user)
+  } catch (error) {
+    res.send(error)
+  }
+}
 
-module.exports = { getUsers };
+module.exports = { getUsers, userData, addBalance };
