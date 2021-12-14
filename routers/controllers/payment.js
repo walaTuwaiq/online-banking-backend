@@ -10,28 +10,30 @@ const userPayments = async (req, res) => {
 };
 
 const paymentReceipt = async (req, res) => {
-  const { date, to, amount } = req.body;
+  const { to, amount } = req.body;
   const userId = req.token.userId;
 
+  console.log(userId);
   try {
-    const user = await cardModel.findOne({ userId });
-    console.log(user);
+    const cardUser = await cardModel.findOne({ userId });
+    console.log(cardUser);
 
-    const newReceipt = new paymentModel({
-      date,
-      from: user._id,
-      to,
-      amount,
-      cardId: user._id,
-    });
-    // console.log(newReceipt);
+    
+    if (cardUser.balance >= amount) {
+      // const ibanCard = cardUser.ibanNumber
+      const newReceipt = new paymentModel({
+        from: cardUser._id,
+        to,
+        amount,
+        cardId: cardUser._id,
+      });
+      // console.log(newReceipt);
+  
+      const saveReceipt = await newReceipt.save();
+      // console.log(saveReceipt);
 
-    const saveReceipt = await newReceipt.save();
-    // console.log(saveReceipt);
-
-    if (user.balance >= amount) {
-      const updateBlanace = user.balance - amount;
-      const updateWallet = await cardModel.findOneAndUpdate(
+      const updateBlanace = cardUser.balance - amount;
+      const updateCardBalance = await cardModel.findOneAndUpdate(
         { userId },
         { balance: updateBlanace },
         { new: true }
@@ -45,7 +47,5 @@ const paymentReceipt = async (req, res) => {
     res.send("error here");
   }
 };
-
-
 
 module.exports = { paymentReceipt, userPayments };

@@ -1,37 +1,37 @@
 const paymentModel = require("../../db/models/paymentModel");
 const userModel = require("../../db/models/userModel");
 const cardModel = require("../../db/models/cardModel");
-const transactionModel = require("../../db/models/transactionModel")
+const transactionModel = require("../../db/models/transactionModel");
 
 const userTransaction = async (req, res) => {
-  const userId = req.token.userId
-  const cardUser = await cardModel.findOne({userId})
-  const receiptsUser = await transactionModel.find({cardId: cardUser._id})
-  res.status(200).json(receiptsUser)
+  const userId = req.token.userId;
+  const cardUser = await cardModel.findOne({ userId });
+  const receiptsUser = await transactionModel.find({ cardId: cardUser._id });
+  res.status(200).json(receiptsUser);
 };
 
 const transactionReceipt = async (req, res) => {
-  const { date, to, amount } = req.body;
+  const { to, amount } = req.body;
   const userId = req.token.userId;
 
   try {
-    const user = await cardModel.findOne({ userId });
-    // console.log(user);
+    console.log(userId);
+    const cardUser = await cardModel.findOne({ userId });
+    // console.log("cardUser");
 
-    
-    if (user.balance >= amount) {
+    if (cardUser.balance >= amount) {
       const newReceipt = new transactionModel({
-        date,
-        from: user._id,
+        from: cardUser._id,
         to,
         amount,
-        cardId: user._id,
+        cardId: cardUser._id,
       });
       // console.log(newReceipt);
-  
+
+
       const saveReceipt = await newReceipt.save();
-      console.log(saveReceipt);
-      const updateBlanace = user.balance - amount;
+      // console.log(saveReceipt);
+      const updateBlanace = cardUser.balance - amount;
       const newBalanceValue = await cardModel.findOneAndUpdate(
         { userId },
         { balance: updateBlanace },
@@ -39,7 +39,18 @@ const transactionReceipt = async (req, res) => {
       );
       // console.log(newBalanceValue);
 
-      res.status(201).json(saveReceipt);
+      const recipientUser = await cardModel.findOne({ _id: to });
+      console.log(recipientUser);
+
+      const addBalanceTo = recipientUser.balance + amount;
+      const recipientUserBalance = await cardModel.findOneAndUpdate(
+        { _id: to },
+        { balance: addBalanceTo },
+        { new: true }
+      );
+      // console.log(recipientUserBalance);
+
+      res.status(201).json(recipientUserBalance);
     } else {
       res.status(403).json("You're don't have enough balance!");
     }

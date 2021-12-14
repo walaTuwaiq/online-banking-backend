@@ -51,13 +51,17 @@ const getUserHistory = async (req, res) => {
     const cardUser = await cardModel.findOne({ userId });
     // console.log(cardUser);
 
-    const transactionsUser = await transactionModel.find({
-      cardId: cardUser._id,
-    });
-    console.log(transactionsUser);
+    const transactionsUser = await transactionModel
+      .find({
+        cardId: cardUser._id,
+      })
+      .populate("cardId");
+    // console.log(transactionsUser);
 
-    const paymentsUser = await paymentModel.find({ cardId: cardUser._id });
-    console.log(paymentsUser);
+    const paymentsUser = await paymentModel
+      .find({ cardId: cardUser._id })
+      .populate("cardId");
+    // console.log(paymentsUser);
 
     res.status(200).json({ paymentsUser, transactionsUser });
   } catch (error) {
@@ -65,4 +69,64 @@ const getUserHistory = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, userData, addBalance, getUserHistory };
+const getFullPaymentById = async (req, res) => {
+  const id = req.params.id
+  // const { id } = req.params.id;
+  const userId = req.token.userId;
+  try {
+    const cardUser = await cardModel.findOne({ userId });
+    // console.log(cardUser);
+
+    // const transactionsUser = await transactionModel
+    //   .find({
+    //     cardId: cardUser._id,
+    //   })
+    //   .populate("cardId");
+    // console.log(transactionsUser);
+
+    const paymentUser = await paymentModel
+      .findOne({ _id:id })
+      .populate("cardId");
+    // console.log(paymentsUser);
+
+    res.status(200).json( paymentUser );
+  } catch (error) {
+    res.send("error here");
+  }
+};
+
+
+const getFullTransactionById = async (req, res) => {
+  const id = req.params.id
+  // const { id } = req.params.id;
+  const userId = req.token.userId;
+  try {
+    // const cardUser = await cardModel.findOne({ userId });
+    // console.log(cardUser);
+
+    // const transactionsUser = await transactionModel
+    //   .find({
+    //     cardId: cardUser._id,
+    //   })
+    //   .populate("cardId");
+    // console.log(transactionsUser);
+
+    const transactionUser = await transactionModel
+      .findOne({ _id:id })
+      .populate("cardId");
+    // console.log(paymentsUser);
+
+    res.status(200).json( transactionUser );
+  } catch (error) {
+    res.send("error here");
+  }
+};
+
+module.exports = {
+  getUsers,
+  userData,
+  addBalance,
+  getUserHistory,
+  getFullPaymentById,
+  getFullTransactionById
+};

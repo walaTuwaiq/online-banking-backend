@@ -11,6 +11,17 @@ const getCards = (req, res) => {
     });
 };
 
+const getIbanCards = (req, res) => {
+  cardModel
+  .find({}).select("ibanNumber")
+  .then((result) => {
+    res.status(200).json(result);
+  })
+  .catch((error) => {
+    res.send(error);
+  });
+};
+
 // const userData = async(req,res)=>{
 //   const userId = req.token.userId
 //   try {
@@ -60,4 +71,4 @@ const getCards = (req, res) => {
 //   }
 // };
 
-module.exports = { getCards };
+module.exports = { getCards, getIbanCards };
