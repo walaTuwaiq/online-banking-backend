@@ -1,5 +1,7 @@
 const userModel = require("../../db/models/userModel");
-const cardModel = require("../../db/models/cardModel")
+const cardModel = require("../../db/models/cardModel");
+const transactionModel = require("../../db/models/transactionModel");
+const paymentModel = require("../../db/models/paymentModel");
 
 const getUsers = (req, res) => {
   userModel
@@ -12,27 +14,55 @@ const getUsers = (req, res) => {
     });
 };
 
-const userData = async(req,res)=>{
-  const userId = req.token.userId
+const userData = async (req, res) => {
+  const userId = req.token.userId;
   try {
-    const userDate = await userModel.findOne({_id:userId}).select("userName fullName lastSeen dateOfBirth nationalId history isAdmin")
-    res.status(200).json(userDate)
+    const userDate = await userModel
+      .findOne({ _id: userId })
+      .select(
+        "userName fullName lastSeen dateOfBirth nationalId history isAdmin"
+      );
+    res.status(200).json(userDate);
   } catch (error) {
-    res.send(error)
+    res.send(error);
   }
-}
+};
 
-const addBalance = async(req,res)=>{
-  const {newBalance} = req.body
-  const userId = req.token.userId
+const addBalance = async (req, res) => {
+  const { newBalance } = req.body;
+  const userId = req.token.userId;
   try {
-    const user = await cardModel.findOne({userId})
-    const sumBlanace = user.balance+newBalance
-    const updateWallet = await cardModel.findOneAndUpdate({userId},{balance:sumBlanace},{new:true})
-    res.status(201).json(user)
+    const user = await cardModel.findOne({ userId });
+    const sumBlanace = user.balance + newBalance;
+    const updateWallet = await cardModel.findOneAndUpdate(
+      { userId },
+      { balance: sumBlanace },
+      { new: true }
+    );
+    res.status(201).json(user);
   } catch (error) {
-    res.send(error)
+    res.send(error);
   }
-}
+};
 
-module.exports = { getUsers, userData, addBalance };
+const getUserHistory = async (req, res) => {
+  const userId = req.token.userId;
+  try {
+    const cardUser = await cardModel.findOne({ userId });
+    // console.log(cardUser);
+
+    const transactionsUser = await transactionModel.find({
+      cardId: cardUser._id,
+    });
+    console.log(transactionsUser);
+
+    const paymentsUser = await paymentModel.find({ cardId: cardUser._id });
+    console.log(paymentsUser);
+
+    res.status(200).json({ paymentsUser, transactionsUser });
+  } catch (error) {
+    res.send("error here");
+  }
+};
+
+module.exports = { getUsers, userData, addBalance, getUserHistory };

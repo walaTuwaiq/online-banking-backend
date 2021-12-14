@@ -16,27 +16,29 @@ const transactionReceipt = async (req, res) => {
 
   try {
     const user = await cardModel.findOne({ userId });
-    console.log(user);
+    // console.log(user);
 
-    const newReceipt = new paymentModel({
-      date,
-      from: user._id,
-      to,
-      amount,
-      cardId: user._id,
-    });
-    // console.log(newReceipt);
-
-    const saveReceipt = await newReceipt.save();
-    // console.log(saveReceipt);
-
+    
     if (user.balance >= amount) {
+      const newReceipt = new transactionModel({
+        date,
+        from: user._id,
+        to,
+        amount,
+        cardId: user._id,
+      });
+      // console.log(newReceipt);
+  
+      const saveReceipt = await newReceipt.save();
+      console.log(saveReceipt);
       const updateBlanace = user.balance - amount;
-      const updateWallet = await cardModel.findOneAndUpdate(
+      const newBalanceValue = await cardModel.findOneAndUpdate(
         { userId },
         { balance: updateBlanace },
         { new: true }
       );
+      // console.log(newBalanceValue);
+
       res.status(201).json(saveReceipt);
     } else {
       res.status(403).json("You're don't have enough balance!");
@@ -47,4 +49,4 @@ const transactionReceipt = async (req, res) => {
   }
 };
 
-module.exports = { paymentReceipt, userPayments };
+module.exports = { userTransaction, transactionReceipt };
