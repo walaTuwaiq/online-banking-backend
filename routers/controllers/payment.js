@@ -13,11 +13,10 @@ const paymentReceipt = async (req, res) => {
   const { to, amount } = req.body;
   const userId = req.token.userId;
 
-  console.log(userId);
+  // console.log(userId);
   try {
     const cardUser = await cardModel.findOne({ userId });
-    console.log(cardUser);
-
+    // console.log(cardUser);
     
     if (cardUser.balance >= amount) {
       // const ibanCard = cardUser.ibanNumber

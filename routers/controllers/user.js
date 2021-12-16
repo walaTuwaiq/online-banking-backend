@@ -17,12 +17,13 @@ const getUsers = (req, res) => {
 const userData = async (req, res) => {
   const userId = req.token.userId;
   try {
-    const userDate = await userModel
+    const user = await userModel
       .findOne({ _id: userId })
       .select(
         "userName fullName lastSeen dateOfBirth nationalId history isAdmin"
       );
-    res.status(200).json(userDate);
+      const userCards = await cardModel.find({userId})
+    res.status(200).json({userCards, user});
   } catch (error) {
     res.send(error);
   }
@@ -122,11 +123,31 @@ const getFullTransactionById = async (req, res) => {
   }
 };
 
+const updateUserData = async (req, res) => {
+  const {userName} = req.body
+  const userId = req.token.userId;
+  try {
+    const updateData = await userModel.findOneAndUpdate({_id:userId},{userName})
+
+    const user = await userModel
+      .findOne({ _id: userId })
+      .select(
+        "userName fullName lastSeen dateOfBirth nationalId history isAdmin"
+      );
+
+      const userCards = await cardModel.find({userId})
+    res.status(200).json({userCards, user});
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 module.exports = {
   getUsers,
   userData,
   addBalance,
   getUserHistory,
   getFullPaymentById,
-  getFullTransactionById
+  getFullTransactionById,
+  updateUserData,
 };
