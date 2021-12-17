@@ -15,9 +15,12 @@ const transactionReceipt = async (req, res) => {
   const userId = req.token.userId;
 
   try {
-    console.log(userId);
+    // console.log(userId);
+    // print correct user id
+
     const cardUser = await cardModel.findOne({ userId });
-    // console.log("cardUser");
+    // console.log(cardUser);
+    // select correct card
 
     if (cardUser.balance >= amount) {
       const newReceipt = new transactionModel({
@@ -27,10 +30,12 @@ const transactionReceipt = async (req, res) => {
         cardId: cardUser._id,
       });
       // console.log(newReceipt);
+      // create new transaction
+      // must be buttom
 
 
       const saveReceipt = await newReceipt.save();
-      // console.log(saveReceipt);
+      
       const updateBlanace = cardUser.balance - amount;
       const newBalanceValue = await cardModel.findOneAndUpdate(
         { userId },
@@ -38,9 +43,11 @@ const transactionReceipt = async (req, res) => {
         { new: true }
       );
       // console.log(newBalanceValue);
+      // updated from mongoose compass
 
       const recipientUser = await cardModel.findOne({ _id: to });
-      console.log(recipientUser);
+      // console.log(recipientUser);
+      // in "to" key assign card id, dont another user id
 
       const addBalanceTo = recipientUser.balance + amount;
       const recipientUserBalance = await cardModel.findOneAndUpdate(
@@ -50,7 +57,7 @@ const transactionReceipt = async (req, res) => {
       );
       // console.log(recipientUserBalance);
 
-      res.status(201).json(recipientUserBalance);
+      res.status(201).json(newBalanceValue);
     } else {
       res.status(403).json("You're don't have enough balance!");
     }

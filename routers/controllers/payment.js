@@ -37,7 +37,7 @@ const paymentReceipt = async (req, res) => {
         { balance: updateBlanace },
         { new: true }
       );
-      res.status(201).json(saveReceipt);
+      res.status(201).json(updateCardBalance);
     } else {
       res.status(403).json("You're don't have enough balance!");
     }

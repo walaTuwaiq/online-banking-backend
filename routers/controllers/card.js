@@ -16,12 +16,12 @@ const getCardByUserId = async(req, res) => {
   const userId = req.token.userId
 
   try {
-    console.log(userId)
+    // console.log(userId)
     const user = await userModel.findOne({_id:userId}).select("userName fullName dateOfBirth isAdmin")
-    console.log(user)
+    // console.log(user)
     
-    const card = await cardModel.find({userId}).select("ibanNumber isActive")
-    console.log(card)
+    const card = await cardModel.find({userId}).select("ibanNumber isActive expiredDate")
+    // console.log(card)
 
     res.status(200).json({user,card})
   } catch (error) {

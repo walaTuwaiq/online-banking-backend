@@ -7,6 +7,7 @@ const userModel = new mongoose.Schema({
   lastSeen: { type: String },
   dateOfBirth: { type: String, required: true },
   nationalId: { type: Number, required: true, unique: true },
+  nationality:{type: String, required: true},
   isAdmin: { type: Boolean, required: true },
   history: [{ type: mongoose.Schema.Types.ObjectId, ref: "paymentModel" }],
 });
