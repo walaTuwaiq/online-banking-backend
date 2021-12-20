@@ -1,11 +1,12 @@
 const express = require("express");
 const cardRoute = express.Router();
 
-const { getCards,getIbanCards, getCardByUserId } = require("../controllers/card");
+const { getCards,getIbanCards, getCardByUserId,addBalance } = require("../controllers/card");
 const { authentication } = require("../middleware/authentication");
 
-cardRoute.get("/cards", getCards);
+cardRoute.get("/cards", authentication, getCards);
 cardRoute.get("/iban-cards", getIbanCards);
+cardRoute.post("/add-balance", authentication, addBalance);
 // cardRoute.get("/user-data", authentication, userData);
 cardRoute.get("/user-card",authentication, getCardByUserId);
 

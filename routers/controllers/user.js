@@ -30,23 +30,6 @@ const userData = async (req, res) => {
   }
 };
 
-const addBalance = async (req, res) => {
-  const { newBalance } = req.body;
-  const userId = req.token.userId;
-  try {
-    const user = await cardModel.findOne({ userId });
-    const sumBlanace = user.balance + newBalance;
-    const updateWallet = await cardModel.findOneAndUpdate(
-      { userId },
-      { balance: sumBlanace },
-      { new: true }
-    );
-    res.status(201).json(user);
-  } catch (error) {
-    res.send(error);
-  }
-};
-
 const getUserHistory = async (req, res) => {
   const userId = req.token.userId;
   try {
@@ -152,7 +135,7 @@ const test = (req, res) => {
 
 const testing = async (req, res) => {
   const { name } = req.body;
-  console.log(name);
+  // console.log(name);
   try {
     const aa = new testModel({ name});
     // console.log(aa,"neeew");
@@ -166,14 +149,37 @@ const testing = async (req, res) => {
   }
 };
 
+const deleteUser = async(req, res) => {
+  const userId = req.token.userId
+  const {id} = req.body
+
+  console.log(id,"id");
+
+  try {
+    const user = await userModel.findOne({_id: userId})
+    console.log(user,"user");
+
+
+    if(user.isAdmin){
+      const account = await userModel.findOneAndDelete({_id:id})
+      const card = await cardModel.findOneAndUpdate({userId:id},{isActive:false})
+      res.status(400).json("Deleted!")
+    } else{
+      res.status(403).json("You Are Not Admin!")
+    }
+  } catch (error) {
+    res.send("error");
+  }
+};
+
 module.exports = {
   getUsers,
   userData,
-  addBalance,
   getUserHistory,
   getFullPaymentById,
   getFullTransactionById,
   updateUserData,
+  deleteUser,
   test,
   testing,
 };
