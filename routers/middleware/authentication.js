@@ -2,6 +2,12 @@ const jwt = require("jsonwebtoken");
 
 const authentication = (req, res, next) => {
   try {
+    if(!req.headers.authorization || req.headers.authorization === "Bearer"){
+      
+      res.status(404).json("No token")
+      
+      return
+    }
     const token = req.headers.authorization.split(" ")[1];
     //change key!
     const valid = jwt.verify(token, "ABC");
@@ -13,5 +19,6 @@ const authentication = (req, res, next) => {
     res.send(error);
   }
 };
+
 
 module.exports = { authentication };

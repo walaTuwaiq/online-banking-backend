@@ -11,7 +11,9 @@ const login = async (req, res) => {
       const checkPass = await bcrypt.compare(password, user.password);
       if (checkPass) {
         const payload = { userId: user._id, userName: user.userName, isAdmin:user.isAdmin };
-        const token = jwt.sign(payload, "ABC");
+        const token = jwt.sign(payload, "ABC",{
+          expiresIn: "1m",
+        });
         res.status(201).json({ token,payload });
       } else {
         res.send("wrong password!");
@@ -24,4 +26,8 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login };
+const checkToken = (req,res)=>{
+  res.status(200).json("DD")
+}
+
+module.exports = { login,checkToken };
