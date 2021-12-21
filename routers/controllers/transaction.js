@@ -67,4 +67,9 @@ const transactionReceipt = async (req, res) => {
   }
 };
 
-module.exports = { userTransaction, transactionReceipt };
+const allTransactions = async(req,res)=>{
+  const transactios = await transactionModel.find({})
+  res.status(200).json(transactios)
+}
+
+module.exports = { userTransaction, transactionReceipt, allTransactions };

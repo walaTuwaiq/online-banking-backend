@@ -12,7 +12,7 @@ const login = async (req, res) => {
       if (checkPass) {
         const payload = { userId: user._id, userName: user.userName, isAdmin:user.isAdmin };
         const token = jwt.sign(payload, "ABC",{
-          expiresIn: "1m",
+          expiresIn: "1h",
         });
         res.status(201).json({ token,payload });
       } else {
