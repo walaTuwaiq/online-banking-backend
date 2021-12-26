@@ -27,6 +27,9 @@ app.use(paymentRoute)
 const transactionRoute = require("./routers/routes/transactionRoute")
 app.use(transactionRoute)
 
+const authorizationRoute = require("./routers/routes/authorizationRoute")
+app.use(authorizationRoute)
+
 
 ////////////
 
