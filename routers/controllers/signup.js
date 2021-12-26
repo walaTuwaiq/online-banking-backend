@@ -6,8 +6,10 @@ const newUser = async (req, res) => {
   let { userName, fullName, password, dateOfBirth, nationalId, nationality } =
     req.body;
 
+    
   try {
     const checkUser = await userModel.find({ nationalId });
+
     if (checkUser.length == 0) {
       password = await bcrypt.hash(password, 10);
       const newUserAccount = await new userModel({
@@ -17,18 +19,24 @@ const newUser = async (req, res) => {
         dateOfBirth,
         nationalId,
         nationality,
-        history: [],
         isAdmin: false,
+        history: [],
       });
-      // console.log(newUserAccount);
+      // console.log(newUserAccount,"newUserAccount");
       //create new user
 
-      // console.log(saveNewAccount,"saveNewAccount");
+      if(newUserAccount.isAdmin==true){
+        // console.log("admin");
+        const saveNewAccount = await newUserAccount.save();
+        // console.log(saveNewAccount,"saveNewAccount");
+        res.status(201).json("WELCOME ADMIN")
+        return;
+      }
       
       // to find last item:
+      // console.log("ffindd");
       const findLastUser = await cardModel.findOne().sort({ _id: -1 }).limit(1);
-      // console.log(findLastUser,"findLastUser");
-      //null
+      // console.log("findLastUser",findLastUser);
       
       //if it's first user in my database:
       if (findLastUser == null) {
@@ -40,12 +48,9 @@ const newUser = async (req, res) => {
           balance: 0,
           userId: newUserAccount._id,
         });
-        // console.log(newCardToUser,"newCardToUser");
         
         const saveNewCard = await newCardToUser.save();
         const saveNewAccount = await newUserAccount.save();
-        // console.log(saveNewCard,"saveNewCard");
-
 
       } else {
         const newIban = findLastUser.ibanNumber + 1;
@@ -60,8 +65,8 @@ const newUser = async (req, res) => {
         });
         const saveNewCard = await newCardToUser.save();
         const saveNewAccount = await newUserAccount.save();
-        console.log(saveNewCard,"saveNewCard");
-        console.log(saveNewAccount,"saveNewAccount");
+        // console.log(saveNewCard,"saveNewCard");
+        // console.log(saveNewAccount,"saveNewAccount");
       }
       res.status(201).json(newUserAccount);
     } else {

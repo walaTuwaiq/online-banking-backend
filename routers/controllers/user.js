@@ -4,15 +4,23 @@ const transactionModel = require("../../db/models/transactionModel");
 const paymentModel = require("../../db/models/paymentModel");
 const testModel = require("../../db/models/TestModel");
 
-const getUsers = (req, res) => {
-  userModel
-    .find({})
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((error) => {
-      res.send(error);
-    });
+const getUsers = async(req, res) => {
+  const userId = req.token.userId
+
+  try {
+    const checkUser = await userModel.findOne({_id: userId})
+    
+    if(checkUser.isAdmin){
+      const users = await userModel.find({})
+      res.status(200).json(users)
+    } else{
+      res.status(403).json("YOU'RE NOT ADMIN")
+    }
+    
+  } catch (error) {
+    res.send("error")
+  }
+ 
 };
 
 const userData = async (req, res) => {
@@ -151,19 +159,24 @@ const testing = async (req, res) => {
 
 const deleteUser = async(req, res) => {
   const userId = req.token.userId
-  const {id} = req.body
+  const id = req.params.id
 
-  console.log(id,"id");
+  // console.log(id,"id");
 
   try {
     const user = await userModel.findOne({_id: userId})
-    console.log(user,"user");
-
+    // console.log(user,"user");
 
     if(user.isAdmin){
       const account = await userModel.findOneAndDelete({_id:id})
+      // console.log(account,"account");
       const card = await cardModel.findOneAndUpdate({userId:id},{isActive:false})
-      res.status(400).json("Deleted!")
+      // console.log(card,"card");
+
+      const users = await userModel.find({})
+      // console.log(users,"users");
+      
+      res.status(200).json(users)
     } else{
       res.status(403).json("You Are Not Admin!")
     }

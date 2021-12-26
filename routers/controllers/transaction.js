@@ -72,4 +72,23 @@ const allTransactions = async(req,res)=>{
   res.status(200).json(transactios)
 }
 
-module.exports = { userTransaction, transactionReceipt, allTransactions };
+const allTransactionsInOneWeek = async(req,res)=>{
+  const date = new Date()
+  const thisDay = date.getDate()
+  const thisMonth = date.getMonth()
+  const thisYear = date.getFullYear()
+  const fromDate= new Date (thisYear,thisMonth,thisDay-7)
+  // console.log(date,"date");
+  // console.log(fromDate,"fromDate");
+
+  const transactios = await transactionModel.find({
+    date:{
+      $gte: fromDate,
+      $lt: date
+    }
+  })
+  // console.log(transactios.length,"transactios");
+  res.status(200).json(transactios)
+}
+
+module.exports = { userTransaction, transactionReceipt, allTransactions,allTransactionsInOneWeek };
