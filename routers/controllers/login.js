@@ -3,10 +3,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
-  let { userName, password } = req.body;
+  let { email, password } = req.body;
     // res.send({email,password})
   try {
-    const user = await userModel.findOne({ userName });
+    const user = await userModel.findOne({ email });
     if (user) {
       const checkPass = await bcrypt.compare(password, user.password);
       if (checkPass) {

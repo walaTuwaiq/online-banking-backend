@@ -30,6 +30,9 @@ app.use(transactionRoute)
 const authorizationRoute = require("./routers/routes/authorizationRoute")
 app.use(authorizationRoute)
 
+const SendMsgRoute = require("./routers/routes/SendMsgRoute")
+app.use(SendMsgRoute)
+
 
 ////////////
 

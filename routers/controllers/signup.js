@@ -3,7 +3,7 @@ const cardModel = require("../../db/models/cardModel");
 const bcrypt = require("bcrypt");
 
 const newUser = async (req, res) => {
-  let { userName, fullName, password, dateOfBirth, nationalId, nationality } =
+  let { email, userName, fullName, password, dateOfBirth, nationalId, nationality } =
     req.body;
 
     
@@ -13,6 +13,7 @@ const newUser = async (req, res) => {
     if (checkUser.length == 0) {
       password = await bcrypt.hash(password, 10);
       const newUserAccount = await new userModel({
+        email,
         userName,
         fullName,
         password,

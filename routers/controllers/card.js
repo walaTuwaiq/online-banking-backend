@@ -23,7 +23,7 @@ const getCardByUserId = async(req, res) => {
 
   try {
     // console.log(userId)
-    const user = await userModel.findOne({_id:userId}).select("userName fullName dateOfBirth isAdmin")
+    const user = await userModel.findOne({_id:userId}).select("email userName fullName dateOfBirth isAdmin")
     // console.log(user)
     
     const card = await cardModel.find({userId}).select("ibanNumber isActive expiredDate")

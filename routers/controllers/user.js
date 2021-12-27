@@ -29,7 +29,7 @@ const userData = async (req, res) => {
     const user = await userModel
       .findOne({ _id: userId })
       .select(
-        "userName fullName lastSeen dateOfBirth nationalId history isAdmin"
+        "email userName fullName lastSeen dateOfBirth nationalId history isAdmin"
       );
     const userCards = await cardModel.find({ userId });
     res.status(200).json({ userCards, user });
@@ -126,7 +126,7 @@ const updateUserData = async (req, res) => {
     const user = await userModel
       .findOne({ _id: userId })
       .select(
-        "userName fullName lastSeen dateOfBirth nationalId history isAdmin"
+        "email userName fullName lastSeen dateOfBirth nationalId history isAdmin"
       );
 
     const userCards = await cardModel.find({ userId });
