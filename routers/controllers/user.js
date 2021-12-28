@@ -3,24 +3,24 @@ const cardModel = require("../../db/models/cardModel");
 const transactionModel = require("../../db/models/transactionModel");
 const paymentModel = require("../../db/models/paymentModel");
 const testModel = require("../../db/models/TestModel");
+const bcrypt = require("bcrypt");
 
-const getUsers = async(req, res) => {
-  const userId = req.token.userId
+
+const getUsers = async (req, res) => {
+  const userId = req.token.userId;
 
   try {
-    const checkUser = await userModel.findOne({_id: userId})
-    
-    if(checkUser.isAdmin){
-      const users = await userModel.find({})
-      res.status(200).json(users)
-    } else{
-      res.status(403).json("YOU'RE NOT ADMIN")
+    const checkUser = await userModel.findOne({ _id: userId });
+
+    if (checkUser.isAdmin) {
+      const users = await userModel.find({});
+      res.status(200).json(users);
+    } else {
+      res.status(403).json("YOU'RE NOT ADMIN");
     }
-    
   } catch (error) {
-    res.send("error")
+    res.send("error");
   }
- 
 };
 
 const userData = async (req, res) => {
@@ -145,7 +145,7 @@ const testing = async (req, res) => {
   const { name } = req.body;
   // console.log(name);
   try {
-    const aa = new testModel({ name});
+    const aa = new testModel({ name });
     // console.log(aa,"neeew");
 
     const bb = await aa.save();
@@ -153,37 +153,70 @@ const testing = async (req, res) => {
 
     res.status(200).json(bb);
   } catch (error) {
-    res.send("errorrr")
+    res.send("errorrr");
   }
 };
 
-const deleteUser = async(req, res) => {
-  const userId = req.token.userId
-  const id = req.params.id
+const deleteUser = async (req, res) => {
+  const userId = req.token.userId;
+  const id = req.params.id;
 
   // console.log(id,"id");
 
   try {
-    const user = await userModel.findOne({_id: userId})
+    const user = await userModel.findOne({ _id: userId });
     // console.log(user,"user");
 
-    if(user.isAdmin){
-      const account = await userModel.findOneAndDelete({_id:id})
+    if (user.isAdmin) {
+      const account = await userModel.findOneAndDelete({ _id: id });
       // console.log(account,"account");
-      const card = await cardModel.findOneAndUpdate({userId:id},{isActive:false})
+      const card = await cardModel.findOneAndUpdate(
+        { userId: id },
+        { isActive: false }
+      );
       // console.log(card,"card");
 
-      const users = await userModel.find({})
+      const users = await userModel.find({});
       // console.log(users,"users");
-      
-      res.status(200).json(users)
-    } else{
-      res.status(403).json("You Are Not Admin!")
+
+      res.status(200).json(users);
+    } else {
+      res.status(403).json("You Are Not Admin!");
     }
   } catch (error) {
     res.send("error");
   }
 };
+
+const checkEmail = async(req, res) => {
+  const { email } = req.body;
+
+  const user = await userModel.findOne({ email });
+
+  if (user) {
+    res.status(200).json("Found");
+  } else {
+    res.send("not found");
+  }
+};
+
+const resetPass = async(req,res)=>{
+  let {password,email} = req.body
+  // console.log(password,"password");
+  
+  const user = await userModel.findOne({email})
+  // console.log(user === true ,"user"); // false
+
+  if(user){
+    password = await bcrypt.hash(password, 10);
+    const updatePass = await userModel.findOneAndUpdate({email},{password},{new:true})
+    res.status(200).json("successfully")
+
+  } else{
+    res.status(403).send("You are don't have account")
+  }
+
+}
 
 module.exports = {
   getUsers,
@@ -195,4 +228,6 @@ module.exports = {
   deleteUser,
   test,
   testing,
+  checkEmail,
+  resetPass,
 };

@@ -57,6 +57,8 @@ const createAuthorization = async (req, res) => {
   }
 };
 
+
+
 module.exports = {
   getAuthorizations,
   createAuthorization,
