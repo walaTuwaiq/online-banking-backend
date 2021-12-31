@@ -7,6 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const userModel = require("./db/models/userModel");
+
 /////////////////
 // const courseRoute = require("./routers/routes/courseRoute")
 // app.use(courseRoute)
@@ -35,6 +37,9 @@ app.use(authorizationRoute);
 const SendMsgRoute = require("./routers/routes/SendMsgRoute");
 app.use(SendMsgRoute);
 
+const socketRoute = require("./routers/routes/socketRoute");
+app.use(socketRoute);
+
 ////////////
 
 const Port = 5000;
@@ -53,14 +58,17 @@ io.on("connection", (socket) => {
   console.log("user connect", socket.id);
 
   socket.on("join_room", (data) => {
+    // const userId = data
+    // const user = userModel.findOne({ _id: data });
+
     socket.join(data);
-    console.log("user id", socket.id, "join in", data, "room");
+    console.log("socket id", socket.id, "join in", data, "room");
   });
 
-  socket.on("send_message",(data)=>{
-    // console.log(data);
-    socket.to(data.room).emit("receive_message",data)
-  })
+  socket.on("send_message", (data) => {
+    console.log(data, "data");
+    socket.to(data.room).emit("receive_message", data);
+  });
 
   socket.on("disconnect", () => {
     console.log("user disconnect", socket.id);
