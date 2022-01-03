@@ -6,6 +6,7 @@ const {
   chatMessageToAdmin,
   messagesById,
   messagesToAdmin,
+  adminChats,
 } = require("../controllers/socket");
 const { authentication } = require("../middleware/authentication");
 
@@ -16,5 +17,7 @@ socketRoute.get("/chat-messages", authentication, messagesById);
 //to Admin
 socketRoute.post("/send-message-admin-chat", authentication, chatMessageToAdmin);
 socketRoute.get("/chat-messages-admin/:id", authentication, messagesToAdmin);
+
+socketRoute.get("/chats-admin", authentication, adminChats);
 
 module.exports = socketRoute;

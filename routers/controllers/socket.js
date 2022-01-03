@@ -164,9 +164,30 @@ const messagesToAdmin = async (req, res) => {
   }
 };
 
+const adminChats = async (req, res) => {
+  const userId = req.token.userId;
+  // console.log(userId, "userId");
+
+  try {
+    const user = await userModel.findOne({ _id: userId });
+    // console.log(user,"user");
+
+    if (user.isAdmin) {
+      const chats = await chatModel.find({}).populate("room","fullName userName dateOfBirth nationalId");
+      // const users = await userModel.findOne({_id:chats[0].room}).select("userName fullName")
+      res.status(200).json(chats);
+    } else {
+      res.status(403).json("You're not an admin");
+    }
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 module.exports = {
   chatMessage,
   chatMessageToAdmin,
   messagesById,
   messagesToAdmin,
+  adminChats,
 };

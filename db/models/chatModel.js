@@ -14,6 +14,7 @@ const chatModel = new mongoose.Schema({
       author: { type: String },
       message: { type: String },
       time: { type: String },
+      date: { type: Date, default: Date.now },
     },
   ],
 });
