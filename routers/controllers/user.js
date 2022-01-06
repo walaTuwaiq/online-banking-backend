@@ -2,7 +2,6 @@ const userModel = require("../../db/models/userModel");
 const cardModel = require("../../db/models/cardModel");
 const transactionModel = require("../../db/models/transactionModel");
 const paymentModel = require("../../db/models/paymentModel");
-const testModel = require("../../db/models/TestModel");
 const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
@@ -104,22 +103,6 @@ const updateUserData = async (req, res) => {
   }
 };
 
-const test = (req, res) => {
-  const testing = testModel.find({});
-  res.status(200).json(testing);
-};
-
-const testing = async (req, res) => {
-  const { name } = req.body;
-  try {
-    const aa = new testModel({ name });
-    const bb = await aa.save();
-    res.status(200).json(bb);
-  } catch (error) {
-    res.send("errorrr");
-  }
-};
-
 const deleteUser = async (req, res) => {
   const userId = req.token.userId;
   const id = req.params.id;
@@ -180,8 +163,6 @@ module.exports = {
   getFullTransactionById,
   updateUserData,
   deleteUser,
-  test,
-  testing,
   checkEmail,
   resetPass,
 };
