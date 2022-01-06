@@ -1,8 +1,9 @@
-require("./db/db");
 const express = require("express");
 let cors = require("cors");
 const socket = require("socket.io");
 const app = express();
+require("dotenv").config();
+require("./db/db");
 
 app.use(cors());
 app.use(express.json());
@@ -43,7 +44,7 @@ app.use(socketRoute);
 ////////////
 
 const Port = 5000;
-const server = app.listen(Port, () => {
+const server = app.listen(process.env.PORT || Port, () => {
   console.log("SERVER IS RUN!");
 });
 

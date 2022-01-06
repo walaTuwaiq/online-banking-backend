@@ -57,7 +57,7 @@ const chatMessage = async (req, res) => {
         messages: { author, message, time },
       });
       const saveNewChat = await chat.save();
-      // console.log(saveNewChat, "saveNewChat");
+      console.log(saveNewChat.messages, "saveNewChat");
       res.status(201).json(saveNewChat.messages);
     }
   } catch (error) {
@@ -87,7 +87,12 @@ const messagesById = async (req, res) => {
     //   );
     // });
     // console.log({ userChats, adminChats }, "{ userChats, adminChats }");
-    res.status(200).json(chats.messages);
+    // console.log(chats, "chats");
+    if (chats !== null) {
+      res.status(200).json(chats.messages);
+    } else {
+      res.status(403).json("not found messages");
+    }
   } catch (error) {
     res.send("error");
   }
@@ -116,14 +121,11 @@ const chatMessageToAdmin = async (req, res) => {
       );
       res.status(201).json(chats.messages);
     } else {
-      const chats = await new chatModel({
-        from: userId,
-        message,
-        time,
-        author,
-        to,
+      const chat = await new chatModel({
+        room: userId,
+        messages: { author, message, time },
       });
-      const saveNewChat = await chats.save();
+      const saveNewChat = await chat.save();
       res.status(201).json(saveNewChat.messages);
     }
   } catch (error) {
@@ -173,7 +175,9 @@ const adminChats = async (req, res) => {
     // console.log(user,"user");
 
     if (user.isAdmin) {
-      const chats = await chatModel.find({}).populate("room","fullName userName dateOfBirth nationalId");
+      const chats = await chatModel
+        .find({})
+        .populate("room", "fullName userName dateOfBirth nationalId");
       // const users = await userModel.findOne({_id:chats[0].room}).select("userName fullName")
       res.status(200).json(chats);
     } else {

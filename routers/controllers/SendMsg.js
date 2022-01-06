@@ -1,10 +1,13 @@
 const nodemailer = require("nodemailer");
 const verificationModel = require("../../db/models/VerificationModel");
+
 require("dotenv").config();
 
 const sendEmailMsg = async (req, res) => {
   // const userId = req.token.userId;
   const { email } = req.body;
+  // console.log(email,"email");
+  // console.log(process.env.MAIL_PASSWORD,"process.env.MAIL_PASSWORD");
 
   let transporter = nodemailer.createTransport({
     service: "gmail",
@@ -24,10 +27,14 @@ const sendEmailMsg = async (req, res) => {
   }
 
   let mailOptions = {
-    from: "Alradhi bank",
+    from: "Alfaiadh bank",
     to: email,
-    subject: "Alradhi Bank",
-    text: result,
+    subject: "Alfaiadh Bank",
+    text: "Verification code..",
+    html: `<h2 style="color:black">Alfaiadh Bank</h2>
+    <p>Verification code:</p>
+    <h3>${result}</h3>
+    `,
   };
 
   transporter.sendMail(mailOptions, async (err, data) => {
@@ -38,7 +45,7 @@ const sendEmailMsg = async (req, res) => {
       if (lastCode == true) {
         const updateCode = await verificationModel.findOneAndUpdate(
           { email },
-          { code:result },
+          { code: result },
           { new: true }
         );
         res.status(201).json("successfully");
