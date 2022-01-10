@@ -8,7 +8,7 @@ const getCards = async (req, res) => {
     const checkAdmin = await userModel.findOne({ _id: userId });
 
     if (checkAdmin.isAdmin) {
-      const cards = await cardModel.find({});
+      const cards = await cardModel.find({}).populate("userId","_id password");
       res.status(200).json(cards);
     }
   } catch (error) {
